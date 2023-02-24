@@ -1,0 +1,19 @@
+[[file:demo.png]]
+
+* Installation
+Note that, current server product was preconfigured to run in Ubuntu 22+ only. Support for other OS and versions will come in later versions.
+
+The server is hosted in THIS IP[Update it].
+
+To install it, just run ~./install.sh~
+* About
+The project is aimed at creating a hierarchical graph for Bengali natural language processing (NLP), with subject nodes representing key topics in Bengali NLP and paper nodes representing papers related to those topics. The graph will be organized based on the recency of the papers and the number of citations they have received. The graph will also provide information about the journals and conferences in which the papers were published, as well as the models and datasets used in the papers. The goal of the project is to provide a comprehensive overview of the current state of Bengali NLP, support further research in the field, and identify areas that may need further attention. The project will involve an extensive literature review and survey and will not use any automated system. The project will be a dynamic and live resource available online to users, and it will aid academics who are getting started on a certain branch of Bangla NLP.
+* Features
+- Topic Nodes: It contains resources, summary about the topic and challenges and urgent needs for that topic. For example, for Bangla Sign Language Topic Node, the urgent need is resource and standarization.
+- Paper Nodes: Contain summary of the paper.
+
+
+The Nodes are presented in a hierarchical fashion so that one can easily navigate through them.
+** Future Features
+1. Resize Topic nodes to make them easily identificable.
+2. Enable a user management system to account for scalability.
