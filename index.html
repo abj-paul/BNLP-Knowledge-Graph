@@ -1,0 +1,270 @@
+<html>
+
+<head>
+  <title>Welcome to BLP knowledge graph</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    #contact {
+      padding: 10px 0 10px;
+    }
+
+    .contact-text {
+      margin: 45px auto;
+    }
+
+    .mail-message-area {
+      width: 100%;
+      padding: 0 15px;
+    }
+
+    .mail-message {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8) !important;
+      -webkit-transition: all 0.7s;
+      -moz-transition: all 0.7s;
+      transition: all 0.7s;
+      margin: 0 auto;
+      border-radius: 0;
+    }
+
+    .not-visible-message {
+      height: 0px;
+      opacity: 0;
+    }
+
+    .visible-message {
+      height: auto;
+      opacity: 1;
+      margin: 25px auto 0;
+    }
+
+    /* Input Styles */
+
+    .form {
+      width: 100%;
+      padding: 15px;
+      background: #f8f8f8;
+      border: 1px solid rgba(0, 0, 0, 0.075);
+      margin-bottom: 25px;
+      color: #727272 !important;
+      font-size: 13px;
+      -webkit-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+      transition: all 0.4s;
+    }
+
+    .form:hover {
+      border: 1px solid #8BC3A3;
+    }
+
+    .form:focus {
+      color: white;
+      outline: none;
+      border: 1px solid #8BC3A3;
+    }
+
+    .textarea {
+      height: 200px;
+      max-height: 200px;
+      max-width: 100%;
+    }
+
+    /* Generic Button Styles */
+
+    .button {
+      padding: 8px 12px;
+      background: #0A5175;
+      display: block;
+      width: 120px;
+      margin: 10px 0 0px 0;
+      border-radius: 3px;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      transition: all 0.3s;
+      text-align: center;
+      font-size: 0.8em;
+      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+      -moz-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+      -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+    }
+
+    .button:hover {
+      background: #8BC3A3;
+      color: white;
+    }
+
+    /* Send Button Styles */
+
+    .form-btn {
+      width: 180px;
+      display: block;
+      height: auto;
+      padding: 15px;
+      color: #fff;
+      background: #8BC3A3;
+      border: none;
+      border-radius: 3px;
+      outline: none;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      transition: all 0.3s;
+      margin: auto;
+      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+      -moz-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+      -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+    }
+
+    .form-btn:hover {
+      background: #111;
+      color: white;
+      border: none;
+    }
+
+    .form-btn:active {
+      opacity: 0.9;
+    }
+
+    .footer {
+      margin-top: 330px;
+    }
+
+    input {
+      position: relative;
+      z-index: 9999;
+    }
+
+    .done {
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">BLP Knowledge Graph</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="http://localhost:35901/">Graph</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="inner contact">
+    <!-- Form Area -->
+    <center>
+      <div class="page-header">
+        <h3>
+          BLP Knowledge Graph
+          <small>Crowdsourced</small>
+        </h3>
+      </div>
+    </center>
+
+    <div class="contact-form">
+      <!-- Form -->
+      <form id="contact-us">
+        <!-- Left Inputs -->
+        <div class="col-xs-6 wow animated slideInLeft" data-wow-delay=".5s">
+          <input type="text" name="entry.7939476" id="name" required="required" class="form"
+            placeholder="Research Paper Title" />
+          <input type="email" name="entry.2069630667" id="mail" required="required" class="form"
+            placeholder="Author Email" />
+          <input type="text" name="entry.700675279" id="subject" required="required" class="form"
+            placeholder="Topic of the paper" />
+        </div><!-- End Left Inputs -->
+        <!-- Right Inputs -->
+        <div class="col-xs-6 wow animated slideInRight" data-wow-delay=".5s">
+          <!-- Message -->
+          <textarea name="entry.1157222572" id="message" class="form textarea" placeholder="Paper Summary"></textarea>
+        </div><!-- End Right Inputs -->
+        <!-- Bottom Submit -->
+        <div class="relative fullwidth col-xs-12">
+          <!-- Send Button -->
+          <button type="submit" id="submit" name="submit" class="form-btn semibold">Send Paper Summary</button>
+        </div><!-- End Bottom Submit -->
+        <!-- Clear -->
+        <div class="clear"></div>
+      </form>
+
+      <!-- Your Mail Message -->
+      <div class="mail-message-area">
+        <!-- Message -->
+        <div class="alert gray-bg mail-message not-visible-message">
+          <strong>Thank You !</strong> Your summary has been delivered.
+        </div>
+      </div>
+
+    </div><!-- End Contact Form Area -->
+  </div><!-- End Inner -->
+
+  <div class="done">
+    <h1>Your form has been submitted wait for evaluation</h1>
+  </div>
+
+  <center class="footer"> <a href="http://localhost:35901/" target="blank">View</a> State of the graph for Bangla NLP!
+  </center>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";;
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG7XFzOKSHmoBOnlkFK7QU1KOjsCMwJuo",
+      authDomain: "blp-knowledge-graph.firebaseapp.com",
+      databaseURL: "https://blp-knowledge-graph-default-rtdb.firebaseio.com",
+      projectId: "blp-knowledge-graph",
+      storageBucket: "blp-knowledge-graph.appspot.com",
+      messagingSenderId: "828293155019",
+      appId: "1:828293155019:web:c20564899cdfc3730c334e",
+      measurementId: "G-1608SR5JQ1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    document.getElementById("contact-us").addEventListener("submit", submitForm);
+
+    function submitForm(e) {
+      e.preventDefault();
+      var name = getElementVal("name");
+      var email = getElementVal("mail");
+      var subject = getElementVal("subject");
+      var message = getElementVal("message");
+      save(name, email, subject, message);
+      informationSent();
+    }
+    const getElementVal = (id) => {
+      return document.getElementById(id).value;
+    }
+    const save = (name, email, subject, message) => {
+      const db = getDatabase(app);
+      set(ref(db, 'contact-us/' + name), {
+        name: name,
+        email: email,
+        subject: subject,
+        message: message
+      });
+    }
+    const informationSent = () => {
+      document.getElementById('contact-us').style.display = 'none';
+      document.querySelector('.done').style.display = "block";
+    }
+  </script>
+</body>
+
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <style>
+        body {
+            background: #419bf0
+        }
+
+        .card {
+            border: none;
+            height: 320px
+        }
+
+        .forms-inputs {
+            position: relative
+        }
+
+        .forms-inputs span {
+            position: absolute;
+            top: -18px;
+            left: 10px;
+            background-color: #fff;
+            padding: 5px 10px;
+            font-size: 15px
+        }
+
+        .forms-inputs input {
+            height: 50px;
+            border: 2px solid #eee
+        }
+
+        .forms-inputs input:focus {
+            box-shadow: none;
+            outline: none;
+            border: 2px solid #000
+        }
+
+        .btn {
+            height: 50px
+        }
+
+        .success-data {
+            display: flex;
+            flex-direction: column
+        }
+
+        .bxs-badge-check {
+            font-size: 90px
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">BLP Knowledge Graph</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li class="active"><a href="login.html">Login</a></li>
+                <li><a href="http://localhost:35901/">Graph</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h2>Login</h2>
+        <form enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+            </div>
+            <button id="login" class="btn btn-default">Submit</button>
+        </form>
+
+
+    </div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG7XFzOKSHmoBOnlkFK7QU1KOjsCMwJuo",
+            authDomain: "blp-knowledge-graph.firebaseapp.com",
+            databaseURL: "https://blp-knowledge-graph-default-rtdb.firebaseio.com",
+            projectId: "blp-knowledge-graph",
+            storageBucket: "blp-knowledge-graph.appspot.com",
+            messagingSenderId: "828293155019",
+            appId: "1:828293155019:web:c20564899cdfc3730c334e",
+            measurementId: "G-1608SR5JQ1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        var login = document.getElementById('login');
+
+        login.addEventListener("click", (e) => {
+            e.preventDefault();
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('pwd').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    window.location.href = "table.html";
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                });
+
+        });
+
+
+    </script>
+</body>
+
+</html>
