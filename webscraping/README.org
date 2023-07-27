@@ -1,0 +1,12 @@
+- [X] Try arxiv default code 
+- [X] Try downloading papers 
+- [X] Try downloading papers on word embedding
+- [X] Try downloading papers on word embedding in bangla
+- [ ] Tune serch keywords with REGEX to find exactly what you need. Arxiv search engine sucks.
+- [ ] List all metadata needed 
+- [ ] Fetch all metadata needed
+- [ ] Try saving filename and paper name, meta data in a file/database.
+
+
+* Temp 
+suggest me resources. I want to cluster papers with similar topics. A paper can belong to multiple cluster so the process is much like topic modeling as well.
