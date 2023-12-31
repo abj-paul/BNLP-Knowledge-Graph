@@ -15,13 +15,85 @@
       border: 1px solid #ccc;
       padding: 10px;
       margin: 5px;
+      cursor: pointer;
+      display: inline-block;
+      width: 100px; /* Set the desired width */
+      box-sizing: border-box;
+      text-align: center;
+      position: relative;
     }
+    .edge {
+      position: absolute;
+      width: 2px;
+      background-color: red;
+      z-index: -1; /* Send the edge behind nodes */
+    }
+    .side-window {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 300px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      overflow-y: auto;
+      display: none;
+    }
+    .close-btn {
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+    
   </style>
 </head>
 <body>
   <div id="graph-container"></div>
+  <div id="side-window" class="side-window">
+    <span id="close-btn" class="close-btn">&times; Close</span>
+    <div id="side-content"></div>
+  </div>
 
   <script>
+    function adjustLine(from, to, line) {
+      var fT = from.offsetTop + from.offsetHeight / 2;
+      var tT = to.offsetTop + to.offsetHeight / 2;
+      var fL = from.offsetLeft + from.offsetWidth / 2;
+      var tL = to.offsetLeft + to.offsetWidth / 2;
+
+      var CA = Math.abs(tT - fT);
+      var CO = Math.abs(tL - fL);
+      var H = Math.sqrt(CA * CA + CO * CO);
+      var ANG = 180 / Math.PI * Math.acos(CA / H);
+
+      if (tT > fT) {
+        var top = (tT - fT) / 2 + fT;
+      } else {
+        var top = (fT - tT) / 2 + tT;
+      }
+      if (tL > fL) {
+        var left = (tL - fL) / 2 + fL;
+      } else {
+        var left = (fL - tL) / 2 + tL;
+      }
+
+      if ((fT < tT && fL < tL) || (tT < fT && tL < fL) || (fT > tT && fL > tL) || (tT > fT && tL > fL)) {
+        ANG *= -1;
+      }
+      top -= H / 2;
+
+      line.style["-webkit-transform"] = 'rotate(' + ANG + 'deg)';
+      line.style["-moz-transform"] = 'rotate(' + ANG + 'deg)';
+      line.style["-ms-transform"] = 'rotate(' + ANG + 'deg)';
+      line.style["-o-transform"] = 'rotate(' + ANG + 'deg)';
+      line.style["-transform"] = 'rotate(' + ANG + 'deg)';
+      line.style.top = top + 'px';
+      line.style.left = left + 'px';
+      line.style.height = H + 'px';
+    }
+
     // Load CSV data and construct knowledge graph
     fetch('data-oracle.csv')
       .then(response => response.text())
@@ -86,28 +158,77 @@
       });
 
       // Render nodes in the container
-      renderNode(container, graph, Object.keys(graph)[0]);
+      renderNode(container, graph, Object.keys(graph)[0], 0);
     }
 
     // Function to render a node and its children
-    function renderNode(container, graph, nodeId) {
+    function renderNode(container, graph, nodeId, level) {
       const nodeData = graph[nodeId].data;
       const nodeElement = document.createElement('div');
+      nodeElement.id = nodeId;
       nodeElement.classList.add('node');
-      nodeElement.innerHTML = `<strong>${nodeData.name} ${nodeData.lastName}</strong><br>${nodeData.position}<br><img src="${nodeData.image}" alt="${nodeData.name} ${nodeData.lastName}">`;
+      nodeElement.style.marginLeft = `${level * 120}px`; // Adjust spacing
+      nodeElement.innerHTML = `<strong>${nodeData.name} ${nodeData.lastName}</strong><br>${nodeData.position}`;
+      nodeElement.onclick = () => openSideWindow(nodeData);
 
       container.appendChild(nodeElement);
 
       const children = graph[nodeId].children;
       if (children && children.length > 0) {
         const childrenContainer = document.createElement('div');
-        childrenContainer.style.marginLeft = '20px';
+        childrenContainer.style.textAlign = 'center';
         container.appendChild(childrenContainer);
 
-        children.forEach(childId => {
-          renderNode(childrenContainer, graph, childId);
+        children.forEach((childId, index) => {
+          renderNode(childrenContainer, graph, childId, level + 1);
+
+          // Add edge connector
+          if (index < children.length - 1) {
+            const edge = document.createElement('div');
+            edge.classList.add('edge');
+            const edgeId = `${nodeId}-${childId}`;
+            edge.id = edgeId;
+            container.appendChild(edge);
+
+            // Ensure the elements are in the DOM before adjusting the line
+            setTimeout(() => {
+              adjustLine(
+                document.getElementById(nodeId),
+                document.getElementById(childId),
+                document.getElementById(edgeId)
+              );
+            });
+          }
         });
       }
+    }
+
+    // Function to open the side window with additional information
+    function openSideWindow(data) {
+      const sideWindow = document.getElementById('side-window');
+      const closeBtn = document.getElementById('close-btn');
+      const sideContent = document.getElementById('side-content');
+
+      sideContent.innerHTML = `
+        <strong>${data.name} ${data.lastName}</strong><br>
+        Position: ${data.position}<br>
+        Email: ${data.email}<br>
+        Phone: ${data.phone_number}<br>
+        Hire Date: ${new Date(data.hire_date).toLocaleDateString()}<br>
+        Salary: ${data.salary}<br>
+        Department: ${data.department_name}<br>
+        Location: ${data.department_location_street_address}, ${data.department_location_postal_code}, ${data.department_location_country_name}
+      `;
+
+      sideWindow.style.display = 'block';
+
+      closeBtn.onclick = () => closeSideWindow();
+    }
+
+    // Function to close the side window
+    function closeSideWindow() {
+      const sideWindow = document.getElementById('side-window');
+      sideWindow.style.display = 'none';
     }
   </script>
 </body>
