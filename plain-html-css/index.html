@@ -10,6 +10,12 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
+      overflow-x: hidden; /* Hide horizontal scrollbar from the body */
+    }
+    .graph-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      width: max-content; /* Ensure container is wide enough to fit all nodes */
     }
     .node {
       border: 1px solid #ccc;
@@ -46,20 +52,19 @@
       font-weight: bold;
       color: #333;
     }
-    
   </style>
 </head>
 <body>
-  <div id="graph-container"></div>
+  <div class="graph-container" id="graph-container"></div>
   <div id="side-window" class="side-window">
     <span id="close-btn" class="close-btn">&times; Close</span>
     <div id="side-content"></div>
   </div>
 
   <script>
-    function adjustLine(from, to, line) {
-      var fT = from.offsetTop + from.offsetHeight / 2;
-      var tT = to.offsetTop + to.offsetHeight / 2;
+    function adjustLine(from, to, line, container) {
+      var fT = from.offsetTop + from.offsetHeight / 2 - container.scrollTop;
+      var tT = to.offsetTop + to.offsetHeight / 2 - container.scrollTop;
       var fL = from.offsetLeft + from.offsetWidth / 2;
       var tL = to.offsetLeft + to.offsetWidth / 2;
 
@@ -195,7 +200,8 @@
               adjustLine(
                 document.getElementById(nodeId),
                 document.getElementById(childId),
-                document.getElementById(edgeId)
+                document.getElementById(edgeId),
+                container
               );
             });
           }
