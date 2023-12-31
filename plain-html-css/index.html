@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Graph</title>
+  <style>
+    /* Add your CSS styling here */
+    /* For example: */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .node {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="graph-container"></div>
+
+  <script>
+    // Load CSV data and construct knowledge graph
+    fetch('data-oracle.csv')
+      .then(response => response.text())
+      .then(data => {
+        const lines = data.split('\n');
+        const nodes = [];
+
+        lines.forEach(line => {
+          const values = line.split(',');
+
+          const node = {
+            id: values[0],
+            parentId: values[1],
+            name: values[2],
+            lastName: values[3],
+            position: values[4],
+            image: values[5],
+            email: values[6],
+            phone_number: values[7],
+            hire_date: values[8],
+            job_id: values[9],
+            salary: values[10],
+            commission_pct: values[11],
+            department_id: values[12],
+            job_min_salary: values[13],
+            location_state: values[14],
+            job_max_salary: values[15],
+            department_name: values[16],
+            department_location_id: values[17],
+            department_location_street_address: values[18],
+            department_location_postal_code: values[19],
+            department_location_country_id: values[20],
+            department_location_country_name: values[21],
+            department_location_country_region_id: values[22],
+            department_location_country_region_name: values[23],
+          };
+
+          nodes.push(node);
+        });
+
+        const graphContainer = document.getElementById('graph-container');
+        constructGraph(graphContainer, nodes);
+      })
+      .catch(error => console.error('Error loading CSV:', error));
+
+    // Function to construct the knowledge graph
+    function constructGraph(container, nodes) {
+      const graph = {};
+
+      // Create nodes
+      nodes.forEach(nodeData => {
+        const nodeId = nodeData.id;
+        graph[nodeId] = { data: nodeData, children: [] };
+
+        const parentId = nodeData.parentId;
+        if (parentId) {
+          if (!graph[parentId]) {
+            graph[parentId] = { children: [] };
+          }
+          graph[parentId].children.push(nodeId);
+        }
+      });
+
+      // Render nodes in the container
+      renderNode(container, graph, Object.keys(graph)[0]);
+    }
+
+    // Function to render a node and its children
+    function renderNode(container, graph, nodeId) {
+      const nodeData = graph[nodeId].data;
+      const nodeElement = document.createElement('div');
+      nodeElement.classList.add('node');
+      nodeElement.innerHTML = `<strong>${nodeData.name} ${nodeData.lastName}</strong><br>${nodeData.position}<br><img src="${nodeData.image}" alt="${nodeData.name} ${nodeData.lastName}">`;
+
+      container.appendChild(nodeElement);
+
+      const children = graph[nodeId].children;
+      if (children && children.length > 0) {
+        const childrenContainer = document.createElement('div');
+        childrenContainer.style.marginLeft = '20px';
+        container.appendChild(childrenContainer);
+
+        children.forEach(childId => {
+          renderNode(childrenContainer, graph, childId);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
