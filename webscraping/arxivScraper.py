@@ -1,5 +1,6 @@
 import requests
 import xml.etree.ElementTree as ET
+import joblib
 
 def search_arxiv(query, max_results=10):
     url = 'http://export.arxiv.org/api/query'
@@ -35,9 +36,11 @@ def extract_metadata_from_arxiv(query, max_results=10):
         return None
 
 # Example usage
-query = 'cat:cs.CV AND submittedDate:[202201010000 TO 202201312359]'
+#query = 'cat:cs.CV AND submittedDate:[202201010000 TO 202201312359]'
+query = 'cat:cs.CL AND Bangla AND Stemming'
 max_results = 5
 papers_metadata = extract_metadata_from_arxiv(query, max_results)
+dataset = []
 if papers_metadata:
     for idx, paper_metadata in enumerate(papers_metadata, start=1):
         print(f"Paper {idx}:")
@@ -46,5 +49,12 @@ if papers_metadata:
         print("Abstract:", paper_metadata['abstract'])
         print("Publication Date:", paper_metadata['publication_date'])
         print()
+        dataset.append({
+            "Title": paper_metadata['title'],
+            "Authors": ", ".join(paper_metadata['authors']),
+            "Abstract": paper_metadata['abstract'],
+            "Publication Date": paper_metadata['publication_date']
+        })
+    joblib.dump(dataset, "paper_dataset.joblib")
 else:
     print("No papers found or error occurred.")
