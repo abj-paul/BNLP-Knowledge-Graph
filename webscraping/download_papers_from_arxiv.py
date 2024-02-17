@@ -21,4 +21,4 @@ def download_pdfs_from_topic(topic):
       result.download_pdf(f"./data/{topic}/")
 
 
-#download_pdfs_from_topic("Word Embedding in Bangla, Word2Vec")
+download_pdfs_from_topic("Word Embedding AND Bangla")

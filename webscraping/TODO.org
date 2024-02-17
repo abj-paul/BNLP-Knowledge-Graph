@@ -1,3 +1,0 @@
-* Trying paper parsers
-[[https://github.com/titipata/scipdf_parser][scipdf_parser]] github package
-[[https://pypi.org/project/science-parse-api/][sci parser api]]

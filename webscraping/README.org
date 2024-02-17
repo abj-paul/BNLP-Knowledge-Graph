@@ -1,12 +1,59 @@
-- [X] Try arxiv default code 
-- [X] Try downloading papers 
-- [X] Try downloading papers on word embedding
-- [X] Try downloading papers on word embedding in bangla
-- [ ] Tune serch keywords with REGEX to find exactly what you need. Arxiv search engine sucks.
-- [ ] List all metadata needed 
-- [ ] Fetch all metadata needed
-- [ ] Try saving filename and paper name, meta data in a file/database.
+* About
+Use arxivScraper.py to download papers' metadata on any topic.
 
 
 * Temp 
 suggest me resources. I want to cluster papers with similar topics. A paper can belong to multiple cluster so the process is much like topic modeling as well.
+
+ here are 50 topics in natural language processing:
+
+    Stemming
+    Part-of-Speech (POS) Tagging
+    Named Entity Recognition (NER)
+    Sentiment Analysis
+    Machine Translation
+    Dependency Parsing
+    Coreference Resolution
+    Semantic Role Labeling (SRL)
+    Text Summarization
+    Language Modeling
+    Text Classification
+    Entity Linking
+    Information Extraction
+    Question Answering
+    Text Generation
+    Document Clustering
+    Text Normalization
+    Emotion Analysis
+    Opinion Mining
+    Core NLP Pipeline
+    Syntactic Parsing
+    Dependency Trees
+    Named Entity Disambiguation
+    Semantic Parsing
+    Speech Recognition
+    Discourse Analysis
+    Paraphrase Detection
+    Knowledge Base Population
+    Text Alignment
+    Document Classification
+    Text-to-Speech Synthesis
+    Dialog Systems
+    Cross-lingual Information Retrieval
+    Multi-document Summarization
+    Code-Switching Detection
+    Semantic Similarity
+    Error Detection and Correction
+    Topic Modeling
+    Information Retrieval
+    Named Entity Normalization
+    Morphological Analysis
+    Anaphora Resolution
+    Lexical Semantics
+    Machine Reading Comprehension
+    Machine Assisted Translation
+    Sentiment Classification
+    Argument Mining
+    Domain Adaptation
+    Automatic Text Simplification
+    Semantic Search
