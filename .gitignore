@@ -2,3 +2,7 @@ scrapeEnv*
 *~
 *.pdf
 webscraping/data/*
+*.joblib
+*.csv
+*.ipynb_checkpoints*
+*.tar.gz

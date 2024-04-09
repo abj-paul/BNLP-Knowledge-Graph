@@ -1,0 +1,73 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citename{Cohen}2015]{cohen2015bmp}
+Cohen, P.~R.
+\newblock (2015).
+\newblock {DARPA's Big Mechanism program}.
+\newblock {\em Physical Biology}, 12(4):045008.
+
+\bibitem[\protect\citename{Demir \bgroup et al.\egroup }2010]{Biopax}
+Demir, E., Cary, M.~P., Paley, S., Fukuda, K., Lemer, C., Vastrik, I., Wu, G.,
+  D'Eustachio, P., Schaefer, C., Luciano, J., et~al.
+\newblock (2010).
+\newblock {The BioPAX community standard for pathway data sharing}.
+\newblock {\em Nature Biotechnology}, 28(9):935--942.
+
+\bibitem[\protect\citename{Hobbs}1978]{hobbs1978}
+Hobbs, J.~R.
+\newblock (1978).
+\newblock Resolving pronoun references.
+\newblock {\em Lingua}, 44(4):311--338.
+
+\bibitem[\protect\citename{Kadrmas \bgroup et al.\egroup }2004]{kadrmas:2004}
+Kadrmas, J.~L., Smith, M.~A., Clark, K.~A., Pronovost, S.~M., Muster, N.,
+  Yates, J.~R., and Beckerle, M.~C.
+\newblock (2004).
+\newblock {The integrin effector PINCH regulates JNK activity and epithelial
+  migration in concert with Ras suppressor 1}.
+\newblock {\em The Journal of Cell Biology}, 167(6):1019--1024.
+
+\bibitem[\protect\citename{Kim \bgroup et al.\egroup }2013]{kim2013ge}
+Kim, J.-D., Wang, Y., and Yasunori, Y.
+\newblock (2013).
+\newblock {The Genia event extraction shared task, 2013 edition -- overview}.
+\newblock In {\em Proceedings of the BioNLP Shared Task 2013 Workshop}, pages
+  8--15.
+
+\bibitem[\protect\citename{Lee \bgroup et al.\egroup }2011]{lee2011sieve}
+Lee, H., Peirsman, Y., Chang, A., Chambers, N., Surdeanu, M., and Jurafsky, D.
+\newblock (2011).
+\newblock {Stanford's multi-pass sieve coreference resolution system at the
+  CoNLL-2011 shared task}.
+\newblock In {\em Proceedings of the Fifteenth Conference on Computational
+  Natural Language Learning: Shared Task}, pages 28--34.
+
+\bibitem[\protect\citename{Lee \bgroup et al.\egroup }2013]{lee2013sieve}
+Lee, H., Chang, A., Peirsman, Y., Chambers, N., Surdeanu, M., and Jurafsky, D.
+\newblock (2013).
+\newblock Deterministic coreference resolution based on entity-centric,
+  precision-ranked rules.
+\newblock {\em Computational Linguistics}, 39(4):885--916.
+
+\bibitem[\protect\citename{Miwa \bgroup et al.\egroup }2012]{miwa2012coref}
+Miwa, M., Thompson, P., and Ananiadou, S.
+\newblock (2012).
+\newblock Boosting automatic event extraction from the literature using domain
+  adaptation and coreference resolution.
+\newblock {\em Bioinformatics}, 28(13):1759--1765.
+
+\bibitem[\protect\citename{{UniProt Consortium}}2015]{uniprot}
+{UniProt Consortium}.
+\newblock (2015).
+\newblock {UniProt: A hub for protein information}.
+\newblock {\em Nucleic Acids Research}, 43(D1):D204--D212.
+
+\bibitem[\protect\citename{Valenzuela-Esc\'{a}rcega \bgroup et al.\egroup
+  }2015]{valenzuela2015odin}
+Valenzuela-Esc\'{a}rcega, M.~A., Hahn-Powell, G., and Surdeanu, M.
+\newblock (2015).
+\newblock A domain-independent rule-based framework for event extraction.
+\newblock In {\em Proceedings of the 53rd Annual Meeting of the Association for
+  Computational Linguistics: Software Demonstrations (ACL)}, pages 127--132.
+
+\end{thebibliography}

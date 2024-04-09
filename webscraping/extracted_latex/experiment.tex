@@ -1,0 +1,111 @@
+\section{Experiments}
+
+The system was evaluated on materials from a 2015 large-scale Big Mechanism evaluation on 1000 papers. While a corpus
+gold-annotated for coreference does exist for the biomedical domain, the BioNLP GE 2013 corpus \cite{kim2013ge}, we instead use the Big Mechanism evaluation corpus for two main reasons. 
+
+First, the BioNLP corpus is not compatible with the model architectures that are central to Big Mechanism, e.g., the Biological 
+Pathways Exchange Language (BioPAX) \cite{Biopax} and Biological Expression Language (BEL)\footnote{\url{http://www.openbel.org/}}.
+For example, the 
+BioNLP corpus makes no functional distinction between regulation and activation events, contrary to BioPAX's ontology, which 
+specifies regulations (as ``controls'') but not activations. Also, BioPAX binding events require at least 2 participants, while 
+BioNLP binding events allow 1 to 6 participants.
+
+Second, the 
+scale of the BioNLP corpus is necessarily limited due to its hand-curated design, with only 20 papers in its training and 
+development subcorpora combined. The relative sparsity of coreference relations that contribute to event extraction 
+that would otherwise be impossible makes this size insufficient. 
+
+Because Odin does not require training, but rather is rule-based, and its rules were developed on different texts, no separation of the DARPA corpus into training and testing was necessary.
+
+\subsection{Evaluation}
+\label{sec:exp}
+
+
+Given that this 1000-paper corpus is not annotated, a recall measure is not possible, as there is no gold set of events to be 
+extracted. Following the DARPA Big Mechanism evaluation, then, we measure throughput, defined as the number of events (or interactions) mentions extracted, as an approximation of recall.\footnote{In a slight departure from DARPA's definition of throughput, here we count regulations and biochemical reactions as distinct event mentions. In the DARPA evaluation, regulations were collapsed with the corresponding controlled reaction into a single event mention.}
+
+Likewise, precision must be hand-coded on a random sample of the program's output. For the overall system, this was performed 
+by independent raters chosen by DARPA, using a metric called {\it generous precision}. In generous precision, the accuracy of a 
+single event extraction is 1 if it is considered useful, i.e., if it is the correct event type and has at least one correct participant, and 0 
+otherwise. The overall generous precision is the average accuracy over evaluated events. Because too few of the events so evaluated 
+resulted from coreference resolution to sufficiently evaluate the coreference system itself, we performed a similar evaluation on 
+100 randomly selected events extracted using coreference resolution, using the same metric.
+
+\subsection{Results}
+
+\begin{table}
+\centering
+\begin{tabular}{l l}
+\toprule
+{\it Throughput mentions}	\\
+\hspace{1em}Odin			& 46,234	\\
+\hspace{1em}Coreference alone			& 1,492	\\
+\hspace{1em}Odin + coreference		& 47,726	\\
+\midrule
+{\it Generous Precision}	\\
+\hspace{1em}Odin + coreference			& 74.2\%	\\
+\hspace{1em}Coreference alone			& 68.0\%	\\
+\bottomrule
+\end{tabular}
+\caption{Throughput and precision for the Odin system with and without the coreference resolution component.}
+\label{tab:results}
+\end{table}
+
+The results summarized in Table \ref{tab:results} show that our sieve-based coreference system contributed a 3.22\% increase in 
+throughput. A separate analysis of the BioNLP 2013 GE gold-annotated corpus shows that the maximum possible contribution of 
+coreference is 8.9\% (under slightly different definitions of reaction types). 
+The BioNLP figure includes phenomena commonly included under the umbrella of ``coreference'', namely the anaphor {\it which} followed by a relative clause and the appositive structures described earlier, which the original Odin system already addressed.
+
+\begin{table}
+\centering
+\begin{tabular}{l l}
+\toprule
+{\it Error source}	& {\it Portion of errors}	\\
+\midrule
+Named entity recognition	& 14\%	\\
+Event recognition	& 36\%	\\
+Coreference resolution	& 50\%	\\
+\bottomrule
+\end{tabular}
+\caption{Error analysis by source of the error. This analysis was performed over all precision errors produced by the coreference resolution component.}
+\label{tab:errors}
+\end{table}
+
+Importantly, the precision of the coreference system approaches that of the Odin system generally (68\% vs. 74\%). This is encouraging: the 74\% generous precision was the second highest precision score reported in this evaluation (the highest was 75.8\%, but at a lower throughput). This demonstrates that, despite its simplicity, the proposed coreference resolution approach has state-of-the-art performance.
+
+\begin{table}
+\centering
+\begin{tabular}{ @{} p{0.25\columnwidth} p{0.7\columnwidth} @{}}
+\toprule
+{\it Error type}	& {\it Example}	\\
+\midrule
+Named entity recognition	& Moreover, although {\it RoR-siRNA} alone was able to increase the p53 level, {\bf it} did not \underline{cause} p53 phosphorylation or acetylation\textellipsis	\\
+Event recognition	& {\it GST and GST-hBex2} fusion proteins were used to test {\bf their} \underline{interaction} with EGFP-tagged LMO2	.\\
+Coreference resolution	& \textellipsis one of two adaptor proteins that varied in {\bf their} reported \underline{interactions}: (1) an adaptor protein that was not known to directly associate with the neurotrophin receptor or the channel ({\it Grb10}), and (2) an adaptor protein that was known to bind to Y\textsuperscript{490} (NPQpY motif) of the neurotrophin receptor ({\it nShc}).	\\
+\bottomrule
+\end{tabular}
+\caption{Examples of errors in coreference resolution by class of error. The correct antecedent is italicized for clarity, but the antecedents were not recognized.}\label{tab:error-examples}
+\end{table}
+
+A further error analysis summarized in Table~\ref{tab:errors} shows that only half of the precision errors are due to actual faulty coreference resolution, while the remaining half are due to errors of 
+the general system, e.g., failure to recognize named entities for antecedents, failures of the 
+event detection rules, and incorrect syntactic analysis on complex sentences.
+
+Table~\ref{tab:error-examples} shows an example of each of the types of error found. The first example fails because {\it RoR-siRNA} was not recognized as an entity; replacing it with an entity known to the event extraction system causes the correct antecedent to be recovered. In the second case, the correct result is that {\it GST} and {\it GST-hBex2} should each interact with {\it LMO2}. Because the event extraction system did not recognize that LMO2 was involved in the event, although it recognized the entity LMO2, the coreference system was left to resolve only {\bf their} \underline{interaction} and produced a single event with two participants, {\it GST} and {\it GST-hBex2}. Finally, there is a case in which the assumptions of the coreference system have been violated: the fully specified mentions {\it follow} rather than {\it precede} the anaphor. This situation is difficult to detect, but future work may extend to recognizing list structures such as that in this example, which may indicate cataphora (in which the full mention follows the anaphoric expression) in a reliable fashion.
+
+\subsection{Mutation evaluation}
+
+Mutation resolution was a late addition to the coreference system and so evaluated separately for precision. Three raters examined a total of 77 entity and event extractions that included at least one mutant that required coreference resolution. For these entity and event mentions, a point was awarded for each correct resolution, a half point if the named antecedent was the correct protein but had the wrong modifications (e.g., it was not mutated), and zero points if the named antecedent was incorrect. This is similar to the ``generous precision'' above in that it gives credit for less than maximally informative resolutions. The precision under this definition was 75.7\%. Of the errorful resolutions, 79\% were due to failures of named entity recognition in sentences like example~\ref{ex:longmut} in which the mutation description was complicated or used nonstandard notation. 
+
+\begin{exe}
+	\ex\label{ex:longmut} When {\it RUFY1 was further truncated from the C-terminus [RUFY1(1-420)]}, the {\bf truncation mutant} could not \underline{bind} to either Rab14 or Rab4.
+\end{exe}
+
+The remaining 21\% of errors were due to coreference resolution failures, but 67\% of these were because a full antecedent was simply never mentioned in the prior text. In example~\ref{ex:no-antecedent}, a sentence from an abstract mentions {\bf the double mutant} which has not yet been defined. In a later section of the text, the mutant is fully described as Nudel\textsuperscript{N20/C36}. This violates the system's general assumption that a full antecedent will precede the anaphor, and by several paragraphs.
+
+\begin{exe}
+	\ex\label{ex:no-antecedent} In contrast, the wild-type Nudel and {\bf the double mutant} that \underline{binds} to neither protein are much less effective.
+\end{exe}
+
+All in all, this analysis indicates that the resolution of protein mutants performs comparably (slightly higher in fact) to the rest of the biomedical coreference resolution system. To our knowledge, this is the first evaluation of a system linking mentions in text that are more or less specific references to mutant proteins. Furthermore, similar to the analysis in the previous sub-section, this error analysis supports the observation that only a small percentage of the errors are inherent limitations of the proposed coreference resolution architecture. 
+

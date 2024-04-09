@@ -1,6 +1,24 @@
 * About
 Use arxivScraper.py to download papers' metadata on any topic.
 
+Installation process: First, we need to run the docker for scientific pdf parser.
+#+begin_src bash
+  python3 -m venv scrapeEnv
+  source scrapeEnv/bin/activate
+  pip install -r requirements.txt
+  cd scrapeEnv/bin
+  ./serve_grobid.sh
+#+end_src
+
+Now we will pull some pdfs from arxivscraper.
+#+begin_src bash
+  python3 arxivScraper.py
+#+end_src
+
+After that, we can use scipdf to parse those PDFs into json format.
+#+begin_src bash
+  
+#+end_src
 
 * Temp 
 suggest me resources. I want to cluster papers with similar topics. A paper can belong to multiple cluster so the process is much like topic modeling as well.

@@ -1,0 +1,65 @@
+%TODO:
+%- Compare against open-domain system. Show 2-3 examples where it fails badly. DONE
+%- Add figure of the sieve architecture, at the beginning of 2.2. DONE
+%- Add work for mutant coreference (in the sieve section) + evaluation DONE
+%- Emphasize domain constraints throughout the paper.
+%- Add abstract DONE
+%- Add Resources section DONE
+%- Add Acknowledgments section DONE
+
+\documentclass[10pt, a4paper]{article}
+\usepackage{lrec2016}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{booktabs}
+\usepackage{graphicx}
+%\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{gb4e}
+
+\newcommand{\todo}[1]{{\bf {TODO: #1}}}
+
+\newlist{inlinelist}{enumerate*}{1}
+\setlist*[inlinelist,1]{%
+  label=(\roman*),
+}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+
+\title{Sieve-based Coreference Resolution in the Biomedical Domain}
+
+\name{Dane Bell, Gus Hahn-Powell, Marco A. Valenzuela-Esc\'{a}rcega, Mihai Surdeanu}
+
+\address{University of Arizona \\
+		Tucson, AZ 85721, USA \\
+		\{dane, hahnpowell, marcov, msurdeanu\}@email.arizona.edu\\}
+
+\abstract{We describe challenges and advantages unique to coreference resolution in the biomedical domain, and a sieve-based architecture that leverages domain knowledge for both entity and event coreference resolution. Domain-general coreference resolution algorithms perform poorly on biomedical documents, because the cues they rely on such as gender are largely absent in this domain, and because they do not encode domain-specific knowledge such as the number and type of participants required in chemical reactions. Moreover, it is difficult to directly encode this knowledge into most coreference resolution algorithms because they are not rule-based. Our rule-based architecture uses sequentially applied hand-designed ``sieves'', with the output of each sieve informing and constraining subsequent sieves. This architecture provides a 3.2\% increase in throughput to our Reach event extraction system with precision parallel to that of the stricter system that relies solely on syntactic patterns for extraction.
+\\ \newline \Keywords{coreference resolution, information extraction, biomedical text mining}}
+
+\begin{document}
+
+\maketitleabstract
+
+\input{intro}
+\input{algorithm}
+\input{experiment}
+\input{discussion}
+
+\section{Software}
+The software described here is open-source and available at \url{http://github.com/clulab/reach}.
+
+\section*{Acknowledgments}
+This work was funded by the Defense Advanced Research Projects Agency (DARPA) Big Mechanism program under ARO contract W911NF-14-1-0395. We thank MITRE for implementing the evaluation discussed in Section~\ref{sec:exp}
+\section{References}
+
+\bibliographystyle{lrec2016}
+\bibliography{coref}
+
+\end{document}

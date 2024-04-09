@@ -1,0 +1,193 @@
+\section{System architecture}
+
+The sieve-based architecture described here was developed in tandem with the Open Domain Informer (Odin) system \cite{valenzuela2015odin} for event extraction. This system uses a relatively small set of human-written (and human-interpretable) rules to extract events from text. Odin, including this coreference component, is highly scalable, and can readily process thousands of papers at a rate of less than five seconds per paper, allowing the full effect of coreference resolution to be measured reliably.
+
+Even without the coreference resolution component, Odin is capable of recognizing some relations involving coreference, because of their grammatical regularity. Specifically, it can recognize relations through relative pronouns such as {\it which}, % the most common event anaphor, 
+as exemplified in \ref{ex:eventcoref}.
+
+\begin{exe}
+	\ex\label{ex:eventcoref} TGF$\beta$\ signaling is initiated by {\it the binding of TGF$\beta$ to TBRII}, {\bf which} 
+leads to the \underline{recruitment} of TBRI.
+\end{exe}
+
+Similarly, Odin already recognizes appositive structures as in example~\ref{ex:appositive}, again due to their grammatical (appositive) structure.
+
+\begin{exe}
+	\ex\label{ex:appositive} Central to the hyperphosphorylation of Tau was the \underline{activation} of {\it GSK-3$\beta$} ({\bf glycogen synthase kinase 3 beta})\textellipsis
+\end{exe}
+
+\subsection{Assumptions}
+
+\paragraph{Anaphors, not cataphors.} 
+
+Although an abbreviated reference may precede a complete reference, as in example~\ref{ex:cataphor}, most anaphors point backward in biomedical texts (and in open domain texts). We make the simplifying and constraining assumption that full mentions will appear before anaphors.
+
+\begin{exe}
+	\ex\label{ex:cataphor}After {\bf its} \underline{release} from I$\kappa$B$\alpha$, {\it NF-$\kappa$B p65} can undergo post-translational modification to activate gene transcription.
+\end{exe}
+
+\paragraph{Event cardinality.}
+
+Based on our ontology of reactions and the corresponding requirements for participants, we split $n$-ary event mentions into multiple binary events. In example~\ref{ex:cardinality}, we find two binding reactions, one each between {\it PIK3CA} and {\it Ras} and between {\it BRAF} and {\it Ras}.
+
+\begin{exe}
+	\ex\label{ex:cardinality} \textellipsis {\it PIK3CA} and {\it BRAF} are, in part, 
+regulated by direct \underline{binding} to activated forms of the Ras proteins\textellipsis
+\end{exe}
+
+\paragraph{Antecedent order determines anaphor order.}
+
+In relatively rare cases of events involving multiple anaphors, if no information hints at which anaphor corefers with which antecedent(s), we proceed left to right. This is a successful strategy in sentences like example~\ref{ex:ordering}.
+
+\begin{exe}
+	\ex\label{ex:ordering}\textellipsis while {\it over-expressed c-Cbl_1} stabilized {\it ``activated'' MLK3_2} , {\bf it_1} \underline{suppressed} {\bf its_2} capacity to promote phosphorylation \textellipsis
+\end{exe}
+
+\subsection{Sieve architecture}
+
+Based on \newcite{lee2013sieve}, we adopt a rule-based sieve architecture for resolving coreference, in which 
+deterministic processes are ordered from highest precision to lowest precision, and from lowest recall to highest recall. 
+The advantages of this approach are similar to those of the rule-based architecture of Odin, and include stability and interpretability by 
+humans, and high overall performance in open domain resolution. 
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{bmsieves.pdf}
+\caption{The architecture of our biomedical coreference system.}
+\label{fig:arch}
+\end{figure}
+
+Though successful in the open domain, \newcite{lee2013sieve}'s system is not well-suited to the biomedical domain, producing low-precision results. For example, it uses a sieve called {\it relaxed head match} that allows two mentions to corefer if the head of the anaphor appears anywhere in the antecedent and has no words not contained in the antecedent. This is problematic in cases such as example~\ref{ex:ikappab}, where it is insufficiently restrictive, matching {\it I$\kappa$B} with {\it I$\kappa$B kinase $\alpha$}.
+
+\begin{exe}
+	\ex\label{ex:ikappab} Two related kinases, {\bf I$\kappa$B kinase $\alpha$} (IKK$\alpha$) and IKK$\beta$, \underline{phosphorylate} {\em the I$\kappa$B proteins} \textellipsis
+\end{exe} 
+
+Here we adapt the sieves to the biomedical domain using four strategies:
+\begin{enumerate}
+\item We eliminate sieves that: are not applicable to the biomedical domain, are already captured by Odin rules, or are insufficiently restrictive in this domain. We eliminated the following sieves from \newcite{lee2013sieve}'s architecture: speaker identification, relaxed string match, relaxed string match, precise constructs, proper head noun match, relaxed head match. 
+\item We created sieves that are specific to the biomedical domain. For clarity, we mark these sieves as ``domain specific'' in the discussion below.
+\item We constrain the remaining open-domain sieves such as pronominal resolution with domain-specific constraints, e.g., forcing a pronominal anaphor to resolve to a protein when this knowledge is available. 
+\item Because our ultimate goal is to re-construct protein signaling pathways, we resolve only entity mentions that participate in biochemical interactions, and incomplete event mentions. We ignore all other potential anaphors such as protein mentions that do not participate in interactions\footnote{These are still considered as candidates for entity resolution.}, and pronominal or nominal phrases in any other constructs. 
+\end{enumerate}
+
+Figure~\ref{fig:arch} shows the proposed sieve-based coreference resolution architecture for the biomedical domain. We detail all components below.
+
+\paragraph{Mention detection.} Unlike open-domain coreference resolution, which aims to resolve all pronominal and nominal mentions in text, here we consider as anaphors only entity and event mentions that participate in fragments of protein signaling pathways. In particular, we only consider entity mentions that are arguments of relevant biochemical interactions previously extracted by Odin (e.g., phophorylations, ubiquitinations, bindings, translocations), and nominal event mentions, e.g., ``this binding''. We identify the latter using a dictionary of event trigger phrases, which must match noun phrases that also include a definite determiner. 
+
+\paragraph{Exact string match.}
+
+We cluster entity mentions that have the same characters in the same order. 
+This is less reliable in the biomedical domain as it is elsewhere, since different proteins (in different species) may 
+have the same name. However, precision remains high.
+
+\begin{exe}
+	\ex\label{ex:exactstring} \textellipsis we incubated {\it GSK3$\beta$} with excess Axin GBD protein to saturate its binding to {\bf GSK3$\beta$} \textellipsis
+\end{exe}
+
+This sieve does not boost throughput of event extraction, since the mentions it concerns are full mentions (rather than, 
+say, pronouns) and thus are recognized by Odin already. However, linking full mentions as referring to the same real-world entity 
+constrains later sieves and aids in assembly. For example, in example~\ref{ex:exactstring}, the link between the two mentions of GSK3$\beta$ ensures that at a later sieve, {\bf its} will not be linked to {\it GSK3$\beta$}, which would posit an incorrect chemical reaction between a protein and itself.
+
+\paragraph{Shared grounding match (domain specific).}
+
+The inverse problem to multiple proteins with the same name is one protein with multiple names, sometimes within a single document. We use a lookup table 
+produced from large databases such as Uniprot \cite{uniprot}, containing many aliases, to cluster mentions that refer to 
+the same real-world entity, whether it be a protein, a gene, a simple chemical, or cell part.
+For example, in \ref{ex:appositiveagain}, {\it GSK-3$\beta$} and {\bf glycogen synthase kinase 3 beta} refer to the same entity. If this sentence were followed by ``it phosphorylates GSK-3$\beta$'', we could thereby prevent {\bf it} from coreferring to {\it glycogen synthase kinase 3 beta}.
+
+\begin{exe}
+	\ex\label{ex:appositiveagain} Central to the hyperphosphorylation of Tau was the \underline{activation} of {\it GSK-3$\beta$} ({\bf glycogen synthase kinase 3 beta})\textellipsis
+\end{exe}
+
+Similarly to the exact string match sieve, this sieve principally has the effect of constraining later sieves, in addition to aiding in assembly.
+
+\paragraph{Mutant match (domain specific).} 
+
+Knowing whether a protein or gene is mutated (i.e.\ altered by substituting, deleting, adding, etc., a section of the amino acids that make up a protein) is crucial to understanding reactions. The differences in reaction participation between ``wild-type'' (non-mutated) and specific mutants of a protein is often the main point of a paper. There are three types of shorthand used to refer back to fully described mutations: 
+\begin{inlinelist}
+\item Noun phrases such as ``the deletion mutant'' that only specify that there is a protein with a (kind of) mutation, but not which protein was mutated or which part of the protein was affected. These cases, exemplified in example~\ref{ex:mut-genericNP} are handled by our later class-based noun phrase resolution sieve.
+\item Noun phrases such as ``S34A mutant'' that specify which mutation is discussed (S34A), but not which protein is being mutated. This case, exemplified in \ref{ex:mut-mutation} is similarly handled as a special case of noun phrase resolution, which is discussed later.
+\item Noun phrases such as ``all six FGFR3 mutants'' that specify which protein is mutated (FGFR3), but not which mutation has taken place, as exemplified in example~\ref{ex:mut-protein}. 
+\end{inlinelist} 
+This last class is handled by the mutant match sieve, which tries to link an entity that has an unknown mutation to a prior mention of the same entity with the mutation spelled out.
+Note that this may yield one-to-many resolution links, if the anaphor is a plural noun such as in example~\ref{ex:mut-protein}:
+
+\begin{exe}
+	\ex\label{ex:mut-genericNP} The anti-pSer34 antibody reacted with {\it AATYK1A} but not with the {\bf S34A mutant [of AATYK1A]} \textellipsis .
+	\ex\label{ex:mut-mutation} \textellipsis we prepared recombinant {\em H2AX-K134A}\textellipsis The intensity of the band corresponding to histone H2AX methylation was significantly diminished in {\bf the K134A mutant} compared with that of wild-type H2AX (H2AX-WT)\textellipsis .
+	\ex\label{ex:mut-protein} Cells were transfected with {\it N540K, G380R, R248C, Y373C, K650M and K650E-FGFR3 mutants} \textellipsis {\bf all six FGFR3 mutants} induced activatory ERK(T202/Y204) phosphorylation\textellipsis .
+\end{exe}
+
+\paragraph{Strict head match.}
+
+Entities are linked if the anaphor's head word is contained in the antecedent mention and 
+the anaphor mention contains only words contained in the antecedent mention (with the exception of stop words). For 
+example, {\it a phosphorylated ASPP2 protein} matches {\it the ASPP2} and {\it the phosphorylated protein} but not {\it 
+the activated ASPP2}. An example of a match is given in example~\ref{ex:headmatch}, where the head {\it enzyme} precedes the entity mention text.
+
+\begin{exe}
+	\ex\label{ex:headmatch} \textellipsis in {\it the enzyme guanylate cyclase}. As a result, {\bf the enzyme} \underline{becomes active} and catalyses the production of more cGMP from GTP.
+\end{exe}
+
+\paragraph{Pronominal and determiner resolution.}
+
+Pronominal coreference is very common in biomedical literature. In fact, pronominal anaphora are the most common in the BioNLP Genia Event Extraction (GE) 2013 gold corpus, with {\it it} and {\it its} being the two most common anaphoric expressions. A typical case is shown in example~\ref{ex:foxp3}.
+
+\begin{exe}
+	\ex\label{ex:foxp3} {\it FOXP3} is an essential transcription factor \textellipsis; however, the mechanisms 
+regulating {\bf its} \underline{expression} are as yet unknown.
+\end{exe}
+
+Most of the variables useful for open-domain pronoun resolution are irrelevant here, 
+particularly gender, person, and animacy, since the entities and events mentioned are invariably referred to as neuter, 
+3\textsuperscript{rd} person, and inanimate in English ({\it it}, {\it its}, {\it them}, etc.). However, pronoun number remains crucial, in that it denotes how many antecedents to link to.
+
+Following \newcite{hobbs1978}, we use a simple heuristic for finding the antecedent of these expressions, starting from the beginning of the current sentence and traveling linearly rightward until an appropriate mention (or mentions) is reached. If insufficient mentions are found this way, we traverse the immediately previous sentence left to right. Unlike Hobbs, who traversed trees, we simply use word order, which is effective in most cases.
+
+We improve this search using several domain-specific constraints. 
+We exclude from this search any mentions that are participants in the current event, which prevents the system from concluding that a protein phosphorylated itself, for example. We further exclude any mentions that have been previously marked as coreferent to any mention that is a participant in the current event, as well as any mentions that we know through domain knowledge cannot be a participant in the current reaction. For example, in a phosphorylation event (the addition of a phosphate molecule to another molecule), the thing being phosphorylated must be a protein or other chemical, and cannot be a sub-cellular location such as the cytoplasm.
+
+Furthermore, a single event mention in the text may be split into multiple events based on the cardinality of the event and of its anaphoric participants. In example~\ref{ex:copeak}, {\bf their} must refer to multiple antecedents (or to one or more plural antecedent), and each of these antecedents must participate in a binding event with FLAG-CUL4A but not with each other.
+
+\begin{exe}
+	\ex\label{ex:copeak} \textellipsis endogenous {\it BAF} and {\it emerin} consistently ``co-peaked'' in {\bf their} \underline{interaction} with FLAG-CUL4A after UV-treatment.
+\end{exe}
+
+\paragraph{Class-based noun phrase resolution (domain specific).}
+
+Relevant entities fall into discrete classes, each with its own set of periphrastic expressions.
+
+\begin{exe}
+	\ex\label{ex:protein} \textellipsis {\it Rb} binds to E2F. {\bf The protein} also \underline{inhibits} the 
+transactivation capacity of E2F.
+	\ex\label{ex:rsmad} \textellipsis the receptor Smads ({\it Smad-1}, {\it Smad-5}, and {\it Smad-8}). {\bf The R-
+Smads} then \underline{form complexes} with the co-Smad (Smad4) and are translocated into the nucleus\textellipsis
+\end{exe}
+
+Classes include proteins ({\it the protein}, {\it kinases}), protein families, genes, sites ({\it site}, {\it this position}), and 
+simple chemicals, but periphrastic noun phrases are much more numerous, referring to subclasses and 
+subsubclasses of each. 
+% Unfortunately, the following is no longer true, since we do not distinguish genes from proteins at the moment.
+% In example \ref{ex:protein}, knowing the class of the preceding potential antecedents through dictionary look-up lets us select Rb (a protein) rather than E2F (a gene). 
+
+Of the anaphora in the gold-annotated GE corpus, 41.0\% (91 of 222) are closed-class words such as {\it it}, {\it 
+which}, and {\it that}. The remainder are periphrastic noun phrases that reference the 
+class of the antecedent entity or event.
+
+At each noun phrase from a constrained set such as ``the protein'', we search only for proteins, using the same search heuristic as in the pronominal resolution sieve. The matches are further constrained in that the anaphoric expressions must contain linguistic evidence that they are coreferent with some already mentioned entity, such as a definite determiner article ({\it the}) or a demonstrative word ({\it these}, {\it that}). Thus, ``a kinase'' does not match, but ``this kinase'' can.
+
+\paragraph{Event coreference (domain specific).}
+
+Simple event mentions such as phosphorylation events can be participants in regulations. When this occurs, they may be full mentions or they may be incomplete, as in example~\ref{ex:event}:
+
+\begin{exe}
+	\ex\label{ex:event} {\it LL-37 forms a complex together with the IGF-1R} \textellipsis and {\bf this binding} \underline{results} in IGF-1R activation \textellipsis .
+\end{exe}
+
+When an incomplete simple event mention is a participant in a regulation, we search for complete event mentions, i.e., event mentions with the expected number of arguments present, constraining our search to events of the same type. Although in principle regulation events can be participants in other regulation events, we constrain the system to one level of recursion to maintain precision, so we do not perform searches on anaphora that indicate regulation events such as {\it the promotion}.
+
+\paragraph{Clean-up.}
+
+The entity and event recognition process for finding anaphoric expressions casts a very wide net. Because the event rules and sieves are carefully constrained to only find appropriate anaphoric relationships, it is not harmful to recognize, for example, expletive {\it it} in expressions like {\it It is hypothesized\textellipsis}. However, it is necessary to clear any entities and events for which appropriate antecedents were not found. These are simply filtered out of the reported entities and events.
+
+

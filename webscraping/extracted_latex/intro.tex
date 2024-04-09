@@ -1,0 +1,40 @@
+\section{Introduction}
+
+% Description of Big Mechanism
+% Although BioNLP has gold annotations for coref, we prefer model-consistent annotation
+% We extend sieve architecture to deal with domain-specific phenomena
+
+Cancer is triggered by extremely complex protein signaling pathways that interact in an intricate network, leading to accordingly complex reactions to cancer treatment drugs. This complexity, combined with the rapid pace of publishing in the biomedical domain, makes these systems effectively intractable for human experts, and so studies are typically reductionist, focusing on a single pathway at a time.
+
+The Defense Advanced Research Projects Agency (DARPA) created the Big Mechanism program \cite{cohen2015bmp} to develop a holistic view of these cancer pathways through automated, large-scale reading and pathway assembly in amendment of and extension to already-existing human-made models of protein reaction networks. Two major requirements to accomplish this ambitious goal are effective automatic reading and assembly, i.e., extracting individual biochemical interactions, linking these isolated interactions together to form larger pathways, and merging them into an existing cancer model. 
+
+Coreference resolution is a fundamental requirement for effective reading and assembly, as it is crucial for deciding which spans of text refer to the same entity in the real world, which can have such disparate labels as ``the protein'', ``both'', or ``ASPP1''. 
+However, with the notable exception of the BioNLP shared task~\cite{kim2013ge}, coreference has rarely been a focus of reading-based work.
+
+Domain-general coreference systems perform poorly in this domain, because they fail to capitalize on domain-specific constraints on possible coreference relations. This is illustrated in example~\ref{ex:ds-selfbindingwrong}, in which a domain-general coreference resolution system~\cite{lee2013sieve} would link {\bf its} to {\it GSK3$\beta$} because of a generally trustworthy heuristic that the earliest named entity in the sentence is likely to be the antecedent of a pronoun if they match grammatically \cite{hobbs1978}. The domain-specific knowledge that a protein binding to itself would not be referred to this way allows us to rule this link out and instead correctly choose {\it Axin GBD}, as in \ref{ex:ds-selfbindingright}.
+
+\begin{exe}
+	\ex \begin{xlist}
+		\ex[*] {\textellipsis we incubated {\it GSK3$\beta$} with excess Axin GBD protein to saturate {\bf its} \underline{binding} to GSK3$\beta$ \textellipsis\footnote{Bold face text denotes an anaphor, and italicized text denotes the antecedent chosen by the approach in discussion. Importantly, for entity resolution, we focus only on entities that participate in biochemical events; an underline denotes the anchor phrase of the corresponding event. The asterisk indicates an incorrect resolution.}}\label{ex:ds-selfbindingwrong}
+		\ex[] {\textellipsis we incubated GSK3$\beta$ with excess {\it Axin GBD} protein to saturate {\bf its} \underline{binding} to GSK3$\beta$ \textellipsis}\label{ex:ds-selfbindingright}
+	\end{xlist}
+\end{exe}
+
+Similarly, domain-general systems would typically make in incorrect link in example~\ref{ex:ds-studywrong}. Because such systems would not know that \underline{interaction} refers to a biochemical reaction that has molecules as its participants, ``study'' is considered as a possible antecedent (a mistake avoided by our approach in example~\ref{ex:ds-studyright}):
+
+\begin{exe}
+	\ex \begin{xlist}
+		\ex[*] {{\it The only previous study} concerned the class II paired box gene Pax8, and {\bf its} \underline{interaction} with Smad3.}\label{ex:ds-studywrong}
+		\ex[] {The only previous study concerned the class II paired box gene {\it Pax8}, and {\bf its} \underline{interaction} with Smad3.}\label{ex:ds-studyright}
+	\end{xlist}
+\end{exe}
+
+Finally, domain general systems are able to make assumptions that do not hold in this domain. For example, in the general domain, a mention of {\bf Barack} or {\bf Obama} is likely to corefer with the more complete mention {\it President Barack Obama}. However, in the biomedical domain, entity names overlap to a great extent, and ``glycogen synthase kinase 3 beta'' is a different entity than ``glycogen''.
+
+The contributions of this work are twofold.
+First, we adapt a sieve-based coreference resolution algorithm \cite{lee2013sieve,lee2011sieve} to the biomedical domain, capitalizing on domain-specific knowledge, extending the biomedical information extraction system of \newcite{valenzuela2015odin}. Importantly, our extensions address both entity and event (i.e., interaction) coreference resolution. 
+The ``sieves'' are sequentially applied heuristics for linking mentions in text, ordered from greatest to least precision and from least to greatest recall. 
+Second, we show that with only seven such sieves, we achieve significant throughput gains while maintaining high precision in a large-scale DARPA evaluation based on the full content of 1000 papers.
+
+
+
